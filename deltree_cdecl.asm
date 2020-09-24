@@ -1,0 +1,29 @@
+%include'io.inc'
+
+CEXTERN free
+
+deltree_cdecl:
+	PUSH EBP
+	MOV EBP, ESP
+	PUSH ESI
+	PUSH EDI
+	MOV EAX, DWORD [EBP + 8]
+	TEST EAX, EAX
+	JE .L1
+	MOV ESI, DWORD [EAX + 4]
+	MOV EDI, DWORD [EAX + 8]
+	SUB ESP, 12
+	PUSH EAX
+	CALL free
+	ADD ESP, 4
+	PUSH EDI
+	CALL deltree_cdecl
+	ADD ESP, 4
+	PUSH ESI
+	CALL deltree_cdecl
+	ADD ESP, 16
+.L1:
+	POP EDI
+	POP ESI
+	POP EBP
+	RET

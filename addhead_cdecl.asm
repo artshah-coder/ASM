@@ -1,0 +1,21 @@
+%include'io.inc'
+CEXTERN malloc
+
+addhead_cdecl:
+	PUSH EBP
+	MOV EBP, ESP
+	SUB ESP, 4
+	PUSH 8
+	CALL malloc
+	TEST EAX, EAX
+	CMOVZ EAX, DWORD [EBP + 8]
+	JZ .L1
+	MOV DX, WORD [EBP + 12]
+	MOVSX DWORD [EAX], DX
+	MOV ECX, DWORD [EBP + 8]
+	MOV DWORD [EAX + 4], ECX
+.L1:
+	ADD ESP, 8
+	POP EBP
+	RET
+	

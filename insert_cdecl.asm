@@ -1,0 +1,78 @@
+%include'io.inc'
+
+CEXTERN malloc
+
+insert_cdecl:
+	PUSH EBP
+	MOV EBP, ESP
+	
+	MOV ECX, DWORD [EBP + 8]
+	MOV DX, WORD [EBP + 12]
+	TEST ECX, ECX
+	JNE .L1
+	PUSH DX
+	PUSH 12
+	CALL malloc
+	ADD ESP, 4
+	POP DX
+	TEST EAX, EAX
+	JE .L3
+	MOVSX DWORD [EAX], DX
+	MOV DWORD [EAX + 4], 0
+	MOV DWORD [EAX + 8], 0
+	JMP .L3
+.L1:
+	CMP WORD [ECX], DX
+	JE .L2
+	JG .L4
+	CMP DWORD [ECX + 8], 0
+	JE .L5
+	PUSH DX
+	PUSH [ECX + 8]
+	CALL insert_cdecl
+	ADD ESP, 8
+	JMP .L2
+.L5:
+	PUSH ECX
+	PUSH DX
+	SUB ESP, 12
+	PUSH 12
+	CALL malloc
+	ADD ESP, 16
+	POP DX
+	POP ECX
+	TEST EAX, EAX
+	JE .L2
+	MOV DWORD [ECX + 8], EAX
+	MOVSX DWORD [EAX], DX
+	MOV DWORD [EAX + 4], 0
+	MOV DWORD [EAX + 8], 0
+	JMP .L2
+.L4:
+	CMP DWORD [ECX + 4], 0
+	JE .L6
+	PUSH DX
+	PUSH [ECX + 4]
+	CALL insert_cdecl
+	ADD ESP, 8
+	JMP .L2
+.L6:
+	PUSH ECX
+	PUSH DX
+	SUB ESP, 12
+	PUSH 12
+	CALL malloc
+	ADD ESP, 16
+	POP DX
+	POP ECX
+	TEST EAX, EAX
+	JE .L2
+	MOV DWORD [ECX + 4], EAX
+	MOVSX DWORD [EAX], DX
+        MOV DWORD [EAX + 4], 0
+        MOV DWORD [EAX + 8], 0
+.L2:
+	MOV EAX, DWORD [EBP + 8]
+.L3:
+	POP EBP
+	RET

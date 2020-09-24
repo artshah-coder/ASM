@@ -1,0 +1,36 @@
+%include'io.inc'
+
+CEXTERN free
+
+dellast_fastcall:
+	PUSH EBP
+	MOV EBP, ESP
+	PUSH ESI
+	MOV ESI, ECX
+	MOV EDX, DWORD [ECX + 4]
+	TEST EDX, EDX
+	JZ .L1
+.L3:	
+	CMP DWORD [EDX + 4], 0
+	JZ .L2
+	MOV ECX, DWORD [ECX + 4]
+	MOV EDX, DWORD [EDX + 4]
+	JMP .L3
+.L2:
+	MOV DWORD [ECX + 4], 0
+	PUSH EDX
+	CALL free
+	ADD ESP, 4
+	JMP .L4
+.L1:
+	PUSH ECX
+	CALL free
+	ADD ESP, 4
+	XOR EAX, EAX
+	JMP .L5
+.L4:	
+	MOV EAX, ESI	
+.L5:
+	POP ESI
+	POP EBP
+	RET
