@@ -1,7 +1,7 @@
 %include'io.inc'
 CEXTERN malloc
 
-addhead_cdecl:
+addhead_fastcall:
 	PUSH EBP
 	MOV EBP, ESP
 	PUSH ECX
